@@ -36,7 +36,7 @@ function playRound(playerSelection, computerSelection) {
           return playerScore++;
         }else{
           console.log("You Lose! Rock beats Scissors");
-          return computerScore;
+          return computerScore++;
         }
       }
       if (playerSelection=="paper"){
@@ -73,7 +73,7 @@ function gameResult(){
 } else if (playerScore < computerScore){
     console.log("You lost the game! Score is " + playerScore +"-"+ computerScore);
 } else{
-  console.log ("The game is a draw Score is"+ playerScore +"-"+ computerScore); 
+  console.log ("The game is a draw! Score is "+ playerScore +"-"+ computerScore); 
 }
 }
 
