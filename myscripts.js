@@ -1,80 +1,124 @@
 let playerScore = 0;
 let computerScore = 0;
 
-// randomie computer moves
-function computerPlay(){
-  let choice = Math.random() *3;
-  if (choice <=1){
-    choice = "rock";
-  }else if (choice<=2){
-    choice="scissors";
+const rock = document.getElementById('rock-btn');
+const paper = document.getElementById('paper-btn');
+const scissors = document.getElementById('scissors-btn');
+const roundResult = document.getElementById("roundUpdate")
+const score = document.querySelector(".scoreBoard")
+const finalResult=document.querySelector(".results")
+const restartButton = document.querySelector(".restart")
 
-  }else{
-    choice="paper";
-  }
-  return choice;
+function computerPlay() {
+  const signs = ["rock", "paper", "scissors"];
+  let choice = Math.floor(Math.random() * 3);
+  return signs[choice];
+}
+function capitalize(string) {
+  return string.charAt(0).toUpperCase() + string.slice(1);
+}
+function draw() {
+  roundResult.textContent="It's a draw!";
 }
 
-// returns result of a round
-function playRound(playerSelection, computerSelection) {
+function win(playerSelection,computerSelection){
+  playerScore++;
+  score.textContent = playerScore+":"+computerScore;
+  if (playerScore<5){
+    roundResult.textContent="You win! "+ capitalize(playerSelection) + " beats "+ computerSelection;
+  }else {
+    finalResult.textContent="Game over, you win!"
+    restartButton.style.visibility="visible";
+    rock.setAttribute("disabled", 1);
+    paper.setAttribute("disabled", 1);
+    scissors.setAttribute("disabled", 1);
+    restartButton.addEventListener("click",endGame)
+  }
+}
+
+function lose(playerSelection,computerSelection){
+  computerScore++;
+  score.textContent=playerScore+":"+computerScore;
+  if(computerScore<5){
+    roundResult.textContent="You lose! "+capitalize(computerSelection)+ " beats "+ playerSelection;
+  }else{
+    finalResult.textContent='Game over, you lose!'
+    restartButton.style.visibility="visible";
+    rock.setAttribute("disabled", 1);
+    paper.setAttribute("disabled", 1);
+    scissors.setAttribute("disabled", 1);
+    restartButton.addEventListener("click",endGame);
+  }
+}
+
+// displays result of a round
+function playRound(playerSelection) {
+    let computerSelection = computerPlay();
+
     if (playerSelection == computerSelection){
-      console.log("It's a draw!");
+      draw();
     }
     else{
       if (playerSelection=="rock"){
         if(computerSelection=="scissors"){
-          console.log("You Win! Rock beats Scissors");
-          return playerScore++;
+          win(playerSelection,computerSelection);
+
         }else{
-          console.log("You Lose! Paper beats Rock");
-          return computerScore++;
+          lose(playerSelection,computerSelection);
         }
       }
-      if (playerSelection=="scissors"){
+      else if (playerSelection=="scissors"){
         if(computerSelection=="paper"){
-          console.log("You Win! Scissors beats Paper");
-          return playerScore++;
+          win(playerSelection,computerSelection);
         }else{
-          console.log("You Lose! Rock beats Scissors");
-          return computerScore++;
+          lose(playerSelection,computerSelection);
         }
       }
-      if (playerSelection=="paper"){
+      else if  (playerSelection=="paper"){
         if(computerSelection=="rock"){
-          console.log("You Win! Paper beats Rock");
-          return playerScore++;
+          win(playerSelection,computerSelection);
         }else{
-          console.log("You Lose! Scissors beats Paper");
-          return computerScore++;
+          lose(playerSelection,computerSelection);
         }
       }
-      }
-
     }
-
-// runs the game
-function game(){
-    for (let i=0;i<5;i++){
-        let playerMove = prompt("Play Rock, Paper or Scissors!").toLowerCase().trim();
-        while (playerMove != "rock" && playerMove != "paper" && playerMove != "scissors") {
-          playerMove = prompt("Invalid Input! Rock Paper Scissors!").toLowerCase().trim();
-      }
-        let computerMove = computerPlay();
-        playRound(playerMove,computerMove);
-        console.log("Current score:" + playerScore +" - "+computerScore);
-    }
-  gameResult()
+    
 }
 
-//updates the score
-function gameResult(){
-  if (playerScore > computerScore){
-    console.log ("You win the game! Score is " + playerScore +"-"+ computerScore); 
-} else if (playerScore < computerScore){
-    console.log("You lost the game! Score is " + playerScore +"-"+ computerScore);
-} else{
-  console.log ("The game is a draw! Score is "+ playerScore +"-"+ computerScore); 
-}
+// resets the game
+function endGame() {
+  // reset both score to 0
+  playerScore = 0;
+  computerScore = 0;
+
+  // display the new score to user
+  score.textContent = playerScore+":"+computerScore;
+  roundResult.textContent= "Play until 5 wins!";
+
+  // show blank result
+  finalResult.textContent = ``;
+  restartButton.style.visibility="hidden";
+
+  // reenable all the RPS buttons so that user can continue to play
+  rock.removeAttribute("disabled");
+  paper.removeAttribute("disabled");
+  scissors.removeAttribute("disabled");
 }
 
-game()
+function main() {
+
+  rock.addEventListener("click",function() {
+    playRound("rock");
+  })
+  
+  paper.addEventListener("click",function() {
+    playRound("paper");
+  })
+  
+  scissors.addEventListener("click",function() {
+    playRound("scissors");
+  })
+  
+}
+
+main()
